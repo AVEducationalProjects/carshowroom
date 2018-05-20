@@ -4,9 +4,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using src.Models;
+using CarShowRoom.ViewModels;
 
-namespace src.Controllers
+namespace CarShowRoom.Controllers
 {
     public class HomeController : Controller
     {
