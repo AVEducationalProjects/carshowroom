@@ -7,12 +7,16 @@
 
     <environment include="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="~/lib/datatables/css/datatables.css" />
+        <link rel="stylesheet" href="~/lib/sb-admin-theme/css/sb-admin-2.css" />
         <link rel="stylesheet" href="~/css/site.css" />
     </environment>
     <environment exclude="Development">
         <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
               asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
               asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
+        <link rel="stylesheet" href="~/lib/sb-admin-theme/css/sb-admin-2.min.css" />
+        <link rel="stylesheet" href="~/lib/datatables/css/datatables.min.css" />
         <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
     </environment>
 </head>
@@ -30,15 +34,35 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
+                    <li><a asp-area="" asp-controller="Client" asp-action="Index">Клиенты</a></li>
+                    <li><a asp-area="" asp-controller="TestDrive" asp-action="Index">Тест-драйв</a></li>
+                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Касса</a></li>
+                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Наряды</a></li>
+                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Склад</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Справочнки<span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" asp-area="" asp-controller="Services" asp-action="Index">Услуги</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a class="dropdown-item" asp-area="" asp-controller="Vendor" asp-action="Index">Запасные части</a></li>
+                            <li><a class="dropdown-item" asp-area="" asp-controller="Vendor" asp-action="Index">Склады</a></li>
+                            <li><a class="dropdown-item" asp-area="" asp-controller="Vendor" asp-action="Index">Поставщики</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a class="dropdown-item" asp-area="" asp-controller="Vendor" asp-action="Index">Марки автомобилей</a></li>
+                            <li><a class="dropdown-item" asp-area="" asp-controller="Vendor" asp-action="Index">Производители</a></li>
+                            <li><a class="dropdown-item" asp-area="" asp-controller="Vendor" asp-action="Index">Цвета</a></li>
+                        </ul>
+                    </li>
                 </ul>
             </div>
         </div>
     </nav>
     <div class="container body-content">
-        @RenderBody()
+        <div>
+            @RenderBody()
+        </div>
         <hr />
         <footer class="text-center">
             <p>&copy; 2018 - Астраханский государственный технический университет</p>
@@ -48,6 +72,8 @@
     <environment include="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="~/lib/datatables/js/datatables.js"></script>
+        <script src="~/lib/sb-admin-theme/js/sb-admin-2.js"></script>
         <script src="~/js/site.js" asp-append-version="true"></script>
     </environment>
     <environment exclude="Development">
@@ -63,6 +89,8 @@
                 crossorigin="anonymous"
                 integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa">
         </script>
+        <script src="~/lib/datatables/js/datatables.min.js"></script>
+        <script src="~/lib/sb-admin-theme/js/sb-admin-2.min.js"></script>
         <script src="~/js/site.min.js" asp-append-version="true"></script>
     </environment>
 

@@ -10,6 +10,11 @@
     padding-right: 15px;
 }
 
+.body-content > div {
+    margin-top: 15px;
+}
+
+
 /* Carousel */
 .carousel-caption p {
     font-size: 20px;
