@@ -1,14 +1,13 @@
+﻿using System;
+
 namespace CarShowRoom.Models
 {
-    public class PartOrderItem
+    public class ServiceOrderItem
     {
         public int Id { get; set; }
 
-        public PartType PartType { get; set; }
-
-        public int Count { get; set; }
-
         public Order Order { get; set; }
 
+        public Service Service{ get; set; }
     }
 }
