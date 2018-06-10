@@ -10,44 +10,46 @@ using CarShowRoom.Models;
 
 namespace CarShowRoom.Controllers
 {
-    public class VendorsController : Controller
+    public class CarModelsController : Controller
     {
         private readonly CRMContext _context;
 
-        public VendorsController(CRMContext context)
+        public CarModelsController(CRMContext context)
         {
             _context = context;
         }
 
-        // GET: Vendors
+        // GET: CarModels
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Vendors.ToListAsync());
+            return View(await _context.CarModels.Include(x=>x.Vendor).AsNoTracking().ToListAsync());
         }
 
-        // GET: Vendors/Create
+        // GET: CarModels/Create
         public IActionResult Create()
         {
+            PopulateVendorsDropDownList();
             return View();
         }
 
-        // POST: Vendors/Create
+        // POST: CarModels/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name")] Vendor vendor)
+        public async Task<IActionResult> Create([Bind("Id,Name,EngineCapacity,EngineType,DriveUnitType,TransmissionType,VendorId")] CarModel carModel)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(vendor);
+                _context.Add(carModel);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(vendor);
+            PopulateVendorsDropDownList(carModel.VendorId);
+            return View(carModel);
         }
 
-        // GET: Vendors/Edit/5
+        // GET: CarModels/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -55,22 +57,24 @@ namespace CarShowRoom.Controllers
                 return NotFound();
             }
 
-            var vendor = await _context.Vendors.SingleOrDefaultAsync(m => m.Id == id);
-            if (vendor == null)
+            var carModel = await _context.CarModels.SingleOrDefaultAsync(m => m.Id == id);
+            if (carModel == null)
             {
                 return NotFound();
             }
-            return View(vendor);
+
+            PopulateVendorsDropDownList(carModel.VendorId);
+            return View(carModel);
         }
 
-        // POST: Vendors/Edit/5
+        // POST: CarModels/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Vendor vendor)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,EngineCapacity,EngineType,DriveUnitType,TransmissionType,VendorId")] CarModel carModel)
         {
-            if (id != vendor.Id)
+            if (id != carModel.Id)
             {
                 return NotFound();
             }
@@ -79,12 +83,12 @@ namespace CarShowRoom.Controllers
             {
                 try
                 {
-                    _context.Update(vendor);
+                    _context.Update(carModel);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!VendorExists(vendor.Id))
+                    if (!CarModelExists(carModel.Id))
                     {
                         return NotFound();
                     }
@@ -95,10 +99,11 @@ namespace CarShowRoom.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(vendor);
+            PopulateVendorsDropDownList(carModel.VendorId);
+            return View(carModel);
         }
 
-        // GET: Vendors/Delete/5
+        // GET: CarModels/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -106,30 +111,36 @@ namespace CarShowRoom.Controllers
                 return NotFound();
             }
 
-            var vendor = await _context.Vendors
+            var carModel = await _context.CarModels.Include(x=>x.Vendor).AsNoTracking()
                 .SingleOrDefaultAsync(m => m.Id == id);
-            if (vendor == null)
+            if (carModel == null)
             {
                 return NotFound();
             }
 
-            return View(vendor);
+            return View(carModel);
         }
 
-        // POST: Vendors/Delete/5
+        // POST: CarModels/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var vendor = await _context.Vendors.SingleOrDefaultAsync(m => m.Id == id);
-            _context.Vendors.Remove(vendor);
+            var carModel = await _context.CarModels.SingleOrDefaultAsync(m => m.Id == id);
+            _context.CarModels.Remove(carModel);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool VendorExists(int id)
+        private bool CarModelExists(int id)
         {
-            return _context.Vendors.Any(e => e.Id == id);
+            return _context.CarModels.Any(e => e.Id == id);
+        }
+
+        private void PopulateVendorsDropDownList(object selectedVendor = null)
+        {
+            var vendorQuery = _context.Vendors.OrderBy(x => x.Name);
+            ViewBag.Vendors = new SelectList(vendorQuery.AsNoTracking(), "Id", "Name", selectedVendor);
         }
     }
 }

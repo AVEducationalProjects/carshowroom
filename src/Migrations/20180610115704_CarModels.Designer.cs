@@ -12,9 +12,10 @@ using System;
 namespace CarShowRoom.Migrations
 {
     [DbContext(typeof(CRMContext))]
-    partial class CRMContextModelSnapshot : ModelSnapshot
+    [Migration("20180610115704_CarModels")]
+    partial class CarModels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -37,7 +38,8 @@ namespace CarShowRoom.Migrations
 
                     b.Property<int>("TransmissionType");
 
-                    b.Property<int>("VendorId");
+                    b.Property<int?>("VendorId")
+                        .IsRequired();
 
                     b.HasKey("Id");
 
@@ -103,7 +105,7 @@ namespace CarShowRoom.Migrations
                     b.HasOne("CarShowRoom.Models.Vendor", "Vendor")
                         .WithMany()
                         .HasForeignKey("VendorId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }
