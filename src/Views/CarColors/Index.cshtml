@@ -1,0 +1,50 @@
+﻿@model IEnumerable<CarShowRoom.Models.CarColor>
+
+@{
+    ViewData["Title"] = "Каталог цветов";
+}
+
+<div class="panel panel-default">
+
+    <div class="panel-heading">
+        <div class="row">
+            <div class="col-md-8"> <h4> @ViewData["Title"] </h4></div>
+            <div class="col-md-4 text-right">
+                <a class="btn btn-primary" asp-action="Create"><span class="glyphicon glyphicon-plus"></span> &nbsp; Добавить</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel-body">
+        <table class="table table-hover table-striped datagrid">
+            <thead>
+                <tr>
+                    <th>
+                        Название
+                    </th>
+                    <th class="col-md-2">
+                    </th>
+                    <th class="col-md-2"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.Id">
+                                @Html.DisplayFor(modelItem => item.Name)
+                            </a>
+                        </td>
+                        <td>
+                            <span class="glyphicon glyphicon-tint" style="color: rgb(@item.Red,@item.Green,@item.Blue);"></span>
+                        </td>
+                        <td class="text-right">
+                            <a class="btn btn-outline btn-default btn-xs " asp-action="Delete" asp-route-id="@item.Id"><span class="glyphicon glyphicon-remove"></span> &nbsp; Удалить</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

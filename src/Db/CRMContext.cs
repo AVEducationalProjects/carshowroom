@@ -11,9 +11,11 @@ namespace CarShowRoom.Db
 
         public DbSet<Service> Services { get; set; }
 
+        public DbSet<CarModel> CarModels { get; set; }
+
         public DbSet<Vendor> Vendors { get; set; }
 
-        public DbSet<CarModel> CarModels { get; set; }
+        public DbSet<CarColor> CarColors { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -21,6 +23,8 @@ namespace CarShowRoom.Db
             modelBuilder.Entity<Service>().Property(x=>x.Price).IsRequired();
 
             modelBuilder.Entity<Vendor>().Property(x => x.Name).IsRequired();
+
+            modelBuilder.Entity<CarColor>().Property(x => x.Name).IsRequired();
 
             modelBuilder.Entity<CarModel>().Property(x => x.Name).IsRequired();
             modelBuilder.Entity<CarModel>().HasOne(x => x.Vendor).WithMany().HasForeignKey(x=>x.VendorId).IsRequired().OnDelete(DeleteBehavior.Restrict);

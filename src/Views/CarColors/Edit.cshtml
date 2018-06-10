@@ -1,0 +1,75 @@
+﻿@model CarShowRoom.Models.CarColor
+
+@{
+    ViewData["Title"] = "Изменение цвета";
+}
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="row">
+            <div class="col-md-8"> <h4> @ViewData["Title"] </h4></div>
+        </div>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-4">
+                <form asp-action="Edit">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="Id" />
+                    <div class="form-group">
+                        <label asp-for="Name" class="control-label">Название</label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Red" class="control-label">Красный</label>
+                        <input id="red" asp-for="Red" class="form-control" />
+                        <span asp-validation-for="Red" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Green" class="control-label">Зеленый</label>
+                        <input id="green" asp-for="Green" class="form-control" />
+                        <span asp-validation-for="Green" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Blue" class="control-label">Синий</label>
+                        <input id="blue" asp-for="Blue" class="form-control" />
+                        <span asp-validation-for="Blue" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Сохранить" class="btn btn-primary" />
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-4" style="padding-top:130px;">
+                <span id="colorShowroom" class="glyphicon glyphicon-tint" style="font-size:150px"></span>
+            </div>
+        </div>
+
+        <div>
+            <a asp-action="Index">Назад</a>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script type="text/javascript">
+        $(function () {
+
+            function updateColorShowroomColor() {
+                var red = $("#red").val();
+                var green = $("#green").val();
+                var blue = $("#blue").val();
+
+                $("#colorShowroom").css("color", "rgb(" + red + "," + green + "," + blue + ")");
+            }
+
+            $("input").change(updateColorShowroomColor);
+
+            updateColorShowroomColor();
+        })
+    </script>
+}
