@@ -1,7 +1,7 @@
-﻿@model CarShowRoom.Models.Service
+﻿@model CarShowRoom.Models.Vendor
 
 @{
-    ViewData["Title"] = "Изменить услугу";
+    ViewData["Title"] = "Новый производитель";
 }
 
 <div class="panel panel-default">
@@ -13,21 +13,15 @@
     <div class="panel-body">
         <div class="row">
             <div class="col-md-4">
-                <form asp-action="Edit">
+                <form asp-action="Create">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    <input type="hidden" asp-for="Id" />
                     <div class="form-group">
                         <label asp-for="Name" class="control-label">Название</label>
                         <input asp-for="Name" class="form-control" />
                         <span asp-validation-for="Name" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="Price" class="control-label">Цена</label>
-                        <input asp-for="Price" class="form-control" />
-                        <span asp-validation-for="Price" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <input type="submit" value="Сохранить" class="btn btn-primary" />
+                        <input type="submit" value="Добавить" class="btn btn-primary" />
                     </div>
                 </form>
             </div>
