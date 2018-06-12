@@ -44,6 +44,10 @@ namespace CarShowRoom.Db
 
             modelBuilder.Entity<CarModel>().Property(x => x.Name).IsRequired();
             modelBuilder.Entity<CarModel>().HasOne(x => x.Vendor).WithMany().HasForeignKey(x=>x.VendorId).IsRequired().OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Client>().Property(x => x.FirstName).IsRequired();
+            modelBuilder.Entity<Client>().Property(x => x.LastName).IsRequired();
+            modelBuilder.Entity<Client>().Property(x => x.Phone).IsRequired();
         }
     }
 }
