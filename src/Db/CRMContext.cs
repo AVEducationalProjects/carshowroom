@@ -11,16 +11,28 @@ namespace CarShowRoom.Db
 
         public DbSet<Service> Services { get; set; }
 
+        public DbSet<Car> Cars { get; set; }
+
         public DbSet<CarModel> CarModels { get; set; }
 
         public DbSet<Vendor> Vendors { get; set; }
 
         public DbSet<CarColor> CarColors { get; set; }
 
+        public DbSet<PartType> PartTypes { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<PartType>().Property(x => x.Name).IsRequired();
+            modelBuilder.Entity<PartType>().Property(x => x.Article).IsRequired();
+            modelBuilder.Entity<PartType>().Property(x => x.Price).IsRequired();
+
             modelBuilder.Entity<Service>().Property(x=>x.Name).IsRequired();
             modelBuilder.Entity<Service>().Property(x=>x.Price).IsRequired();
+
+            modelBuilder.Entity<Car>().Property(x => x.VIN).IsRequired();
+            modelBuilder.Entity<Car>().Property(x => x.Year).IsRequired();
+            modelBuilder.Entity<Car>().Property(x => x.Price).IsRequired();
 
             modelBuilder.Entity<Vendor>().Property(x => x.Name).IsRequired();
 
