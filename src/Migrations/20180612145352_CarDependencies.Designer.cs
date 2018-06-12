@@ -12,9 +12,10 @@ using System;
 namespace CarShowRoom.Migrations
 {
     [DbContext(typeof(CRMContext))]
-    partial class CRMContextModelSnapshot : ModelSnapshot
+    [Migration("20180612145352_CarDependencies")]
+    partial class CarDependencies
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,8 +35,6 @@ namespace CarShowRoom.Migrations
 
                     b.Property<int?>("DepotId");
 
-                    b.Property<int>("PartnerId");
-
                     b.Property<decimal>("Price");
 
                     b.Property<bool>("TestDrive");
@@ -54,8 +53,6 @@ namespace CarShowRoom.Migrations
                     b.HasIndex("ColorId");
 
                     b.HasIndex("DepotId");
-
-                    b.HasIndex("PartnerId");
 
                     b.ToTable("Cars");
                 });
@@ -144,21 +141,6 @@ namespace CarShowRoom.Migrations
                     b.ToTable("Depots");
                 });
 
-            modelBuilder.Entity("CarShowRoom.Models.Partner", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Name")
-                        .IsRequired();
-
-                    b.Property<string>("Requisites");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Partners");
-                });
-
             modelBuilder.Entity("CarShowRoom.Models.PartType", b =>
                 {
                     b.Property<int>("Id")
@@ -226,11 +208,6 @@ namespace CarShowRoom.Migrations
                     b.HasOne("CarShowRoom.Models.Depot", "Depot")
                         .WithMany()
                         .HasForeignKey("DepotId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("CarShowRoom.Models.Partner", "Partner")
-                        .WithMany()
-                        .HasForeignKey("PartnerId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 

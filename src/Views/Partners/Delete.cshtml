@@ -1,0 +1,20 @@
+﻿@model CarShowRoom.Models.Partner
+
+@{
+    ViewData["Title"] = $"Удаление поставщика \"{Model.Name}\"";
+}
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="row">
+            <div class="col-md-8"> <h4> @ViewData["Title"] </h4></div>
+        </div>
+    </div>
+    <div class="panel-body">
+        <form asp-action="Delete">
+            <input type="hidden" asp-for="Id" />
+            <input type="submit" value="Удалить" class="btn btn-danger" /> |
+            <a asp-action="Index">Назад</a>
+        </form>
+    </div>
+</div>
