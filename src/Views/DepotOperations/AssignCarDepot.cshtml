@@ -1,0 +1,45 @@
+﻿@using CarShowRoom.Models;
+@model Car
+
+@{
+    ViewData["Title"] = "Принять автомобиль на склад";
+}
+
+<<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="row">
+            <div class="col-md-8"> <h4> @ViewData["Title"] </h4></div>
+        </div>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-6">
+                <form asp-action="AssignCarDepot">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <input type="hidden" asp-for="Id" />
+                    <div class="form-group">
+                        <label asp-for="DepotId" class="control-label">Склад</label>
+                        <select asp-for="DepotId" class="form-control" asp-items="ViewBag.DepotId"></select>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="submit" value="Сохранить" class="btn btn-primary" />
+                    </div>
+                </form>
+            </div>
+        </div>
+
+
+        <div>
+            <a asp-action="Index">Назад</a>
+        </div>
+
+    </div>
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
