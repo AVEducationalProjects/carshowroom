@@ -21,8 +21,12 @@ namespace CarShowRoom.Db
 
         public DbSet<PartType> PartTypes { get; set; }
 
+        public DbSet<Depot> Depots{ get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Depot>().Property(x => x.Name).IsRequired();
+
             modelBuilder.Entity<PartType>().Property(x => x.Name).IsRequired();
             modelBuilder.Entity<PartType>().Property(x => x.Article).IsRequired();
             modelBuilder.Entity<PartType>().Property(x => x.Price).IsRequired();
