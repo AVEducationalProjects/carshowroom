@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace CarShowRoom.Models
 {
     public class Car
@@ -38,6 +40,8 @@ namespace CarShowRoom.Models
         public Partner Partner { get; set; }
 
         public int PartnerId { get; set; }
+
+        public IList<Order> Orders { get; set; }
 
         public override string ToString()
         {

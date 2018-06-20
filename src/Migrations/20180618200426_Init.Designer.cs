@@ -12,8 +12,8 @@ using System;
 namespace CarShowRoom.Migrations
 {
     [DbContext(typeof(CRMContext))]
-    [Migration("20180612150335_Partners")]
-    partial class Partners
+    [Migration("20180618200426_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -21,6 +21,25 @@ namespace CarShowRoom.Migrations
             modelBuilder
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn)
                 .HasAnnotation("ProductVersion", "2.0.3-rtm-10026");
+
+            modelBuilder.Entity("CarShowRoom.Models.Bill", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<decimal>("Amount");
+
+                    b.Property<DateTime>("Date");
+
+                    b.Property<int?>("OrderId")
+                        .IsRequired();
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("Bills");
+                });
 
             modelBuilder.Entity("CarShowRoom.Models.Car", b =>
                 {
@@ -38,6 +57,8 @@ namespace CarShowRoom.Migrations
                     b.Property<int>("PartnerId");
 
                     b.Property<decimal>("Price");
+
+                    b.Property<bool>("Sold");
 
                     b.Property<bool>("TestDrive");
 
@@ -145,6 +166,33 @@ namespace CarShowRoom.Migrations
                     b.ToTable("Depots");
                 });
 
+            modelBuilder.Entity("CarShowRoom.Models.Order", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("CarId");
+
+                    b.Property<int?>("ClientId")
+                        .IsRequired();
+
+                    b.Property<DateTime>("Date");
+
+                    b.Property<bool>("Done");
+
+                    b.Property<bool>("IsSell");
+
+                    b.Property<decimal>("Price");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CarId");
+
+                    b.HasIndex("ClientId");
+
+                    b.ToTable("Orders");
+                });
+
             modelBuilder.Entity("CarShowRoom.Models.Partner", b =>
                 {
                     b.Property<int>("Id")
@@ -160,6 +208,28 @@ namespace CarShowRoom.Migrations
                     b.ToTable("Partners");
                 });
 
+            modelBuilder.Entity("CarShowRoom.Models.PartOrderItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("Count");
+
+                    b.Property<int?>("OrderId")
+                        .IsRequired();
+
+                    b.Property<int?>("PartTypeId")
+                        .IsRequired();
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.HasIndex("PartTypeId");
+
+                    b.ToTable("PartOrderItem");
+                });
+
             modelBuilder.Entity("CarShowRoom.Models.PartType", b =>
                 {
                     b.Property<int>("Id")
@@ -171,8 +241,7 @@ namespace CarShowRoom.Migrations
                     b.Property<string>("Name")
                         .IsRequired();
 
-                    b.Property<string>("Price")
-                        .IsRequired();
+                    b.Property<decimal>("Price");
 
                     b.HasKey("Id");
 
@@ -194,6 +263,26 @@ namespace CarShowRoom.Migrations
                     b.ToTable("Services");
                 });
 
+            modelBuilder.Entity("CarShowRoom.Models.ServiceOrderItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int?>("OrderId")
+                        .IsRequired();
+
+                    b.Property<int?>("ServiceId")
+                        .IsRequired();
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.HasIndex("ServiceId");
+
+                    b.ToTable("ServiceOrderItem");
+                });
+
             modelBuilder.Entity("CarShowRoom.Models.Vendor", b =>
                 {
                     b.Property<int>("Id")
@@ -207,6 +296,14 @@ namespace CarShowRoom.Migrations
                     b.ToTable("Vendors");
                 });
 
+            modelBuilder.Entity("CarShowRoom.Models.Bill", b =>
+                {
+                    b.HasOne("CarShowRoom.Models.Order", "Order")
+                        .WithMany("Bills")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
             modelBuilder.Entity("CarShowRoom.Models.Car", b =>
                 {
                     b.HasOne("CarShowRoom.Models.CarModel", "CarModel")
@@ -215,7 +312,7 @@ namespace CarShowRoom.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("CarShowRoom.Models.Client", "Client")
-                        .WithMany()
+                        .WithMany("Cars")
                         .HasForeignKey("ClientId")
                         .OnDelete(DeleteBehavior.Restrict);
 
@@ -241,6 +338,45 @@ namespace CarShowRoom.Migrations
                         .WithMany()
                         .HasForeignKey("VendorId")
                         .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("CarShowRoom.Models.Order", b =>
+                {
+                    b.HasOne("CarShowRoom.Models.Car", "Car")
+                        .WithMany("Orders")
+                        .HasForeignKey("CarId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("CarShowRoom.Models.Client", "Client")
+                        .WithMany()
+                        .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("CarShowRoom.Models.PartOrderItem", b =>
+                {
+                    b.HasOne("CarShowRoom.Models.Order", "Order")
+                        .WithMany("Parts")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("CarShowRoom.Models.PartType", "PartType")
+                        .WithMany()
+                        .HasForeignKey("PartTypeId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("CarShowRoom.Models.ServiceOrderItem", b =>
+                {
+                    b.HasOne("CarShowRoom.Models.Order", "Order")
+                        .WithMany("Services")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("CarShowRoom.Models.Service", "Service")
+                        .WithMany()
+                        .HasForeignKey("ServiceId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

@@ -25,6 +25,10 @@ namespace CarShowRoom.Db
 
         public DbSet<Partner> Partners { get; set; }
 
+        public DbSet<Order> Orders { get; set; }
+
+        public DbSet<Bill> Bills { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Depot>().Property(x => x.Name).IsRequired();
@@ -55,7 +59,16 @@ namespace CarShowRoom.Db
             modelBuilder.Entity<Car>().HasOne(x => x.CarModel).WithMany().HasForeignKey(x => x.CarModelId).OnDelete(DeleteBehavior.Restrict).IsRequired();
             modelBuilder.Entity<Car>().HasOne(x => x.Partner).WithMany().HasForeignKey(x => x.PartnerId).OnDelete(DeleteBehavior.Restrict).IsRequired();
             modelBuilder.Entity<Car>().HasOne(x => x.Depot).WithMany().HasForeignKey(x => x.DepotId).OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<Car>().HasOne(x => x.Client).WithMany().HasForeignKey(x => x.ClientId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Car>().HasOne(x => x.Client).WithMany(x=>x.Cars).HasForeignKey(x => x.ClientId).OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Order>().HasOne(x => x.Car).WithMany(x => x.Orders).HasForeignKey(x => x.CarId).OnDelete(DeleteBehavior.Cascade).IsRequired();
+            modelBuilder.Entity<Order>().HasOne(x => x.Client).WithMany().HasForeignKey(x => x.ClientId).OnDelete(DeleteBehavior.Cascade).IsRequired();
+            modelBuilder.Entity<Order>().HasMany(x => x.Parts).WithOne(x=>x.Order).OnDelete(DeleteBehavior.Cascade).IsRequired();
+            modelBuilder.Entity<PartOrderItem>().HasOne(x => x.PartType).WithMany().OnDelete(DeleteBehavior.Cascade).IsRequired();
+            modelBuilder.Entity<Order>().HasMany(x => x.Services).WithOne(x => x.Order).OnDelete(DeleteBehavior.Cascade).IsRequired();
+            modelBuilder.Entity<ServiceOrderItem>().HasOne(x => x.Service).WithMany().OnDelete(DeleteBehavior.Cascade).IsRequired();
+
+            modelBuilder.Entity<Bill>().HasOne(x => x.Order).WithMany(x => x.Bills).OnDelete(DeleteBehavior.Cascade).IsRequired();
         }
 
     }

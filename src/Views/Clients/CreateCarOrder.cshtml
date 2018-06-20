@@ -1,0 +1,143 @@
+﻿@model CarShowRoom.Models.Car
+
+@{
+    ViewData["Title"] = "Оформление заказа автомобиля";
+
+    var cars = (IList<CarShowRoom.Models.Car>)ViewBag.AvailableCars;
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-md-8"><h4> @ViewData["Title"] </h4></div>
+                    <div class="col-md-4">
+                        <select id="page-selector" class="col-md-12 form-control">
+                            <option data-panel="existing" value="existing">В наличии</option>
+                            <option data-panel="new" value="new">Под заказ</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body">
+
+                <div id="existing" class="col-md-12">
+                    <form asp-action="SelectCar">
+                        <input type="hidden" name="Id" value="@ViewContext.RouteData.Values["Id"]" />
+                        <table class="table table-hover table-striped datagrid">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>
+                                        Название
+                                    </th>
+                                    <th>
+                                        Цена
+                                    </th>
+                                    <th>
+                                        Склад
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var car in cars)
+                                {
+                                    <tr>
+                                        <td>
+                                            <input type="radio" name="carId" value="@car.Id">
+                                        </td>
+                                        <td>
+                                            @car.ToString()
+                                        </td>
+                                        <td>@car.Price</td>
+                                        <td>@((car.Depot != null) ? car.Depot.Name : "заказана")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+
+                        <div class="form-group">
+                            <input type="submit" value="Заказать" class="btn btn-primary" />
+                        </div>
+                    </form>
+                </div>
+
+                <div id="new" class="row">
+                    <form asp-action="CreateCarOrder">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="CarModelId" class="control-label">Модель</label>
+                                <select asp-for="CarModelId" class="form-control" asp-items="ViewBag.CarModelId"></select>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="ColorId" class="control-label">Цвет</label>
+                                <select asp-for="ColorId" class="form-control" asp-items="ViewBag.ColorId"></select>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Year" class="control-label">Год выпуска</label>
+                                <input asp-for="Year" class="form-control" />
+                                <span asp-validation-for="Year" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="VIN" class="control-label"></label>
+                                <input asp-for="VIN" class="form-control" />
+                                <span asp-validation-for="VIN" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <input type="submit" value="Заказать" class="btn btn-primary" />
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="PartnerId" class="control-label">Поставвщик</label>
+                                <select asp-for="PartnerId" class="form-control" asp-items="ViewBag.PartnerId"></select>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="Price" class="control-label">Цена</label>
+                                <input asp-for="Price" class="form-control" />
+                                <span asp-validation-for="Price" class="text-danger"></span>
+                            </div>
+
+                            <input type="hidden" asp-for="TestDrive" /> Использовать для тест-драйва
+                            <input type="hidden" asp-for="ClientId" /> Использовать для тест-драйва
+                        </div>
+                    </form>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts{
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script type="text/javascript">
+        $(function () {
+
+            function showSelected() {
+                var selectedPage = $("#page-selector").val();
+                if (selectedPage == "new") {
+                    $("#new").show();
+                    $("#existing").hide();
+                } else {
+                    $("#new").hide();
+                    $("#existing").show();
+                }
+            }
+
+            $("#page-selector").change(showSelected);
+
+            showSelected();
+
+        });
+    </script>
+
+}

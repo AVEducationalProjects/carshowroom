@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace CarShowRoom.Models
 {
@@ -19,5 +20,7 @@ namespace CarShowRoom.Models
         public string Email { get; set; }
 
         public Stage Stage { get; set; }
+
+        public ICollection<Car> Cars { get; set; }
     }
 }

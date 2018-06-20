@@ -23,7 +23,7 @@ namespace CarShowRoom.Models
 
         public override string ToString()
         {
-            return $"{Vendor.Name} {Name} ({EngineCapacity}, {EngineType.GetAttribute<DisplayAttribute>().Name.ToLower()}, кпп {TransmissionType.GetAttribute<DisplayAttribute>().Name.ToLower()}, привод {DriveUnitType.GetAttribute<DisplayAttribute>().Name.ToLower()})";
+            return $"{Vendor?.Name} {Name} ({EngineCapacity}, {EngineType.GetAttribute<DisplayAttribute>().Name.ToLower()}, кпп {TransmissionType.GetAttribute<DisplayAttribute>().Name.ToLower()}, привод {DriveUnitType.GetAttribute<DisplayAttribute>().Name.ToLower()})";
         }
     }
 }

@@ -29,15 +29,30 @@ namespace CarShowRoom.Controllers
 
         private void FillStats(IList<Client> list)
         {
-            ViewBag.Stats = new Dictionary<Stage, int>
+            if (list.Count == 0)
             {
-                {Stage.Lead, list.Count(x=>x.Stage==Stage.Lead)*100/list.Count},
-                {Stage.Interest, list.Count(x=>x.Stage==Stage.Interest)*100/list.Count},
-                {Stage.Decision, list.Count(x=>x.Stage==Stage.Decision)*100/list.Count},
-                {Stage.Purchase, list.Count(x=>x.Stage==Stage.Purchase)*100/list.Count},
-                {Stage.Contracted, list.Count(x=>x.Stage==Stage.Contracted)*100/list.Count},
-                {Stage.Denied, list.Count(x=>x.Stage==Stage.Denied)*100/list.Count}
-            };
+                ViewBag.Stats = new Dictionary<Stage, int>
+                {
+                    {Stage.Lead, 100},
+                    {Stage.Interest, 0},
+                    {Stage.Decision, 0},
+                    {Stage.Purchase, 0 },
+                    {Stage.Contracted, 0},
+                    {Stage.Denied, 0}
+                };
+            }
+            else
+            {
+                ViewBag.Stats = new Dictionary<Stage, int>
+                {
+                    {Stage.Lead, list.Count(x=>x.Stage==Stage.Lead)*100/list.Count},
+                    {Stage.Interest, list.Count(x=>x.Stage==Stage.Interest)*100/list.Count},
+                    {Stage.Decision, list.Count(x=>x.Stage==Stage.Decision)*100/list.Count},
+                    {Stage.Purchase, list.Count(x=>x.Stage==Stage.Purchase)*100/list.Count},
+                    {Stage.Contracted, list.Count(x=>x.Stage==Stage.Contracted)*100/list.Count},
+                    {Stage.Denied, list.Count(x=>x.Stage==Stage.Denied)*100/list.Count}
+                };
+            }
         }
 
         // GET: Clients/Details/5
@@ -49,6 +64,13 @@ namespace CarShowRoom.Controllers
             }
 
             var client = await _context.Clients
+                .Include(x => x.Cars)
+                    .ThenInclude(x => x.CarModel)
+                        .ThenInclude(x => x.Vendor)
+                .Include(x => x.Cars)
+                    .ThenInclude(x => x.Color)
+                .Include(x => x.Cars)
+                    .ThenInclude(x => x.Depot)
                 .SingleOrDefaultAsync(m => m.Id == id);
             if (client == null)
             {
@@ -165,17 +187,89 @@ namespace CarShowRoom.Controllers
         {
             var client = await _context.Clients.SingleOrDefaultAsync(m => m.Id == id);
 
-            if (client.Stage!= Stage.Denied && client.Stage != Stage.Contracted)
+            if (client.Stage != Stage.Denied && client.Stage != Stage.Contracted)
                 client.Stage = client.Stage + 1;
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-        
+
 
         private bool ClientExists(int id)
         {
             return _context.Clients.Any(e => e.Id == id);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> CreateCarOrder(int id)
+        {
+            ViewBag.AvailableCars = await _context.Cars
+                .Include(x => x.CarModel)
+                .Include(x => x.CarModel.Vendor)
+                .Include(x => x.Color)
+                .Include(x => x.Depot)
+                .Where(x => x.ClientId == null)
+                .ToListAsync();
+
+            ViewData["CarModelId"] = new SelectList(_context.CarModels.Include(c => c.Vendor).AsNoTracking(), "Id", null);
+            ViewData["ColorId"] = new SelectList(_context.CarColors, "Id", "Name");
+            ViewData["PartnerId"] = new SelectList(_context.Partners, "Id", "Name");
+
+            return View(new Car { ClientId = id });
+        }
+
+        public async Task<IActionResult> SelectCar(int id, int carId)
+        {
+            var car = await _context.Cars.Include(x => x.CarModel).SingleAsync(x => x.Id == carId);
+            car.ClientId = id;
+
+            CreateSellOrder(car);
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Details), new { Id = id });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateCarOrder([Bind("Id,VIN,Year,Price,ColorId,TestDrive,CarModelId,PartnerId,ClientId")] Car car)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(car);
+                await _context.SaveChangesAsync();
+
+                CreateSellOrder(car);
+
+                return RedirectToAction(nameof(Details), new { Id = car.ClientId });
+            }
+            ViewData["CarModelId"] = new SelectList(_context.CarModels.Include(c => c.Vendor).AsNoTracking(), "Id", null);
+            ViewData["ColorId"] = new SelectList(_context.CarColors, "Id", "Name", car.ColorId);
+            ViewData["PartnerId"] = new SelectList(_context.Partners, "Id", "Name", car.PartnerId);
+            return View(car);
+        }
+
+
+        private void CreateSellOrder(Car car)
+        {
+            var order = new Order
+            {
+                CarId = car.Id,
+                IsSell = true,
+                ClientId = car.ClientId.Value
+            };
+
+            order.UpdatePrice();
+
+            _context.Orders.Add(order);
+        }
+
+        public async Task<IActionResult> DismissOrder(int id, int carId)
+        {
+            var car = await _context.Cars.SingleAsync(x => x.Id == carId);
+            car.ClientId = null;
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Details), new { Id = id });
         }
     }
 }
