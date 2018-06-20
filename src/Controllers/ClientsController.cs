@@ -223,7 +223,7 @@ namespace CarShowRoom.Controllers
             var car = await _context.Cars.Include(x => x.CarModel).SingleAsync(x => x.Id == carId);
             car.ClientId = id;
 
-            CreateSellOrder(car);
+            await CreateSellOrder(car);
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Details), new { Id = id });
@@ -238,7 +238,7 @@ namespace CarShowRoom.Controllers
                 _context.Add(car);
                 await _context.SaveChangesAsync();
 
-                CreateSellOrder(car);
+                await CreateSellOrder(car);
 
                 return RedirectToAction(nameof(Details), new { Id = car.ClientId });
             }
@@ -249,18 +249,24 @@ namespace CarShowRoom.Controllers
         }
 
 
-        private void CreateSellOrder(Car car)
+        private async Task CreateSellOrder(Car car)
         {
             var order = new Order
             {
                 CarId = car.Id,
+                Car = car,
                 IsSell = true,
-                ClientId = car.ClientId.Value
+                ClientId = car.ClientId.Value,
+                Parts = new List<PartOrderItem>(),
+                Services = new List<ServiceOrderItem>()
             };
 
             order.UpdatePrice();
 
             _context.Orders.Add(order);
+
+            var client = await _context.Clients.SingleAsync(x => x.Id == car.ClientId.Value);
+            client.Stage = Stage.Purchase;
         }
 
         public async Task<IActionResult> DismissOrder(int id, int carId)

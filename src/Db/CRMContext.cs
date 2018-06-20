@@ -68,7 +68,7 @@ namespace CarShowRoom.Db
             modelBuilder.Entity<Order>().HasMany(x => x.Services).WithOne(x => x.Order).OnDelete(DeleteBehavior.Cascade).IsRequired();
             modelBuilder.Entity<ServiceOrderItem>().HasOne(x => x.Service).WithMany().OnDelete(DeleteBehavior.Cascade).IsRequired();
 
-            modelBuilder.Entity<Bill>().HasOne(x => x.Order).WithMany(x => x.Bills).OnDelete(DeleteBehavior.Cascade).IsRequired();
+            modelBuilder.Entity<Bill>().HasOne(x => x.Order).WithMany(x => x.Bills).HasForeignKey(x=>x.OrderId).OnDelete(DeleteBehavior.Cascade).IsRequired();
         }
 
     }

@@ -41,5 +41,20 @@ namespace CarShowRoom.Models
                 Price = IsSell ? Car.Price : 0 + Services.Sum(x => x.Service.Price) + Parts.Sum(x => x.PartType.Price);
             }
         }
+
+        public bool IsPaid()
+        {
+            return Bills.Sum(x => x.Amount) >= Price;
+        }
+
+        public decimal NotPaid()
+        {
+            return Price - Bills.Sum(x => x.Amount);
+        }
+
+        public override string ToString()
+        {
+            return $"№ {Id} от {Date.ToShortDateString()}";
+        }
     }
 }
