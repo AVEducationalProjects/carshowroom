@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace CarShowRoom.Models
 {
@@ -55,6 +56,18 @@ namespace CarShowRoom.Models
         public override string ToString()
         {
             return $"№ {Id} от {Date.ToShortDateString()}";
+        }
+
+        public string GetShortDescription()
+        {
+            var sb = new StringBuilder();
+            if (IsSell)
+                sb.Append($"Выдача автомобиля {Car.ToString()}, ");
+            if(Services.Count>0)
+                sb.Append($"Оказание услуг: {String.Join(", ", Services.Select(x => x.Service.Name)) }. ");
+            if(Parts.Count>0)
+                sb.Append($"Запчасти: {String.Join(", ", Parts.Select(x => x.PartType.Name)) }. ");
+            return sb.ToString();
         }
     }
 }

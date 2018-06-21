@@ -22,5 +22,10 @@ namespace CarShowRoom.Models
         public Stage Stage { get; set; }
 
         public ICollection<Car> Cars { get; set; }
+
+        public override string ToString()
+        {
+            return $"{LastName} {FirstName} {MiddleName}";
+        }
     }
 }

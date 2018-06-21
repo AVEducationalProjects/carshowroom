@@ -1,0 +1,79 @@
+﻿@model IEnumerable<CarShowRoom.Models.Order>
+
+@{
+    ViewData["Title"] = "Заказы/наряды";
+}
+
+<div class="panel panel-default">
+
+    <div class="panel-heading">
+        <div class="row">
+            <div class="col-md-8"> <h4> @ViewData["Title"] </h4></div>
+            <div class="col-md-4 text-right">
+                <a class="btn btn-primary" asp-action="Create"><span class="glyphicon glyphicon-plus"></span> &nbsp; Добавить</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel-body">
+        <table class="table table-hover table-striped datagrid">
+            <thead>
+                <tr>
+                    <th class="col-md-1">
+                        №
+                    </th>
+                    <th>
+                        Краткое описание
+                    </th>
+                    <th class="col-md-1">
+                        Оплачен
+                    </th>
+                    <th class="col-md-1">
+                        Статус
+                    </th>
+                    <th class="col-md-2">
+                        Клиент
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            <a asp-action="Details" asp-route-id="@item.Id">
+                                @item.ToString()
+                            </a>
+                        </td>
+                        <td>
+                            @item.GetShortDescription()
+                        </td>
+                        <td>
+                            @if (item.IsPaid())
+                            {
+                                <span>оплачен</span>
+                            }
+                            else
+                            {
+                                <span>-</span>
+                            }
+                        </td>
+                        <td>
+                            @if (item.Done)
+                            {
+                                <span>выполнен</span>
+                            }
+                            else
+                            {
+                                <span>-</span>
+                            }
+                        </td>
+                        <td>
+                            @item.Client.ToString()
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
