@@ -303,10 +303,10 @@ namespace CarShowRoom.Controllers
             var client = await _context.Clients
                 .Include(x => x.Cars).ThenInclude(x => x.CarModel).ThenInclude(x=>x.Vendor)
                 .Include(x => x.Cars).ThenInclude(x => x.Color)
-                .SingleAsync();
+                .SingleAsync(x=>x.Id==id);
             ViewBag.Cars = new SelectList(client.Cars, "Id", null);
             ViewBag.Services = (await _context.Services.ToListAsync())
-                .Select(x => new ServiceCheck { Id = x.Id, Name = x.Name, Checked = false }).ToList();
+                .Select(x => new ServiceCheck { Id = x.Id, Name = x.Name, Price=x.Price, Checked = false }).ToList();
             
             return View(order);
         }

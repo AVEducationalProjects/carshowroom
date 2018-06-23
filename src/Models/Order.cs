@@ -39,7 +39,7 @@ namespace CarShowRoom.Models
 
         public void UpdatePrice()
         {
-            if (Car != null && Parts != null && Services != null)
+            if ((Car != null || CarId !=0) && Parts != null && Services != null)
             {
                 Price = IsSell ? Car.Price : 0 + Services.Sum(x => x.Service.Price) + Parts.Sum(x => x.PartType.Price);
             }
@@ -65,9 +65,9 @@ namespace CarShowRoom.Models
             var sb = new StringBuilder();
             if (IsSell)
                 sb.Append($"Выдача автомобиля {Car.ToString()}, ");
-            if(Services.Count>0)
+            if (Services.Count > 0)
                 sb.Append($"Оказание услуг: {String.Join(", ", Services.Select(x => x.Service.Name)) }. ");
-            if(Parts.Count>0)
+            if (Parts.Count > 0)
                 sb.Append($"Запчасти: {String.Join(", ", Parts.Select(x => x.PartType.Name)) }. ");
             return sb.ToString();
         }

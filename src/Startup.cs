@@ -8,6 +8,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using CarShowRoom.Db;
+using CarShowRoom.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
 
 namespace CarShowRoom
 {
@@ -27,8 +31,18 @@ namespace CarShowRoom
             
             services.AddEntityFrameworkNpgsql()
                 .AddDbContext<CRMContext>(options => options.UseNpgsql(connectionString));
-            
-            services.AddMvc();
+
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<CRMContext>()
+                .AddDefaultTokenProviders();
+
+            services.AddMvc(config =>
+            {
+                var policy = new AuthorizationPolicyBuilder()
+                                 .RequireAuthenticatedUser()
+                                 .Build();
+                config.Filters.Add(new AuthorizeFilter(policy));
+            });
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -43,6 +57,8 @@ namespace CarShowRoom
             }
 
             app.UseStaticFiles();
+
+            app.UseAuthentication();
 
             app.UseMvc(routes =>
             {

@@ -1,9 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using CarShowRoom.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace CarShowRoom.Db
 {
-    public class CRMContext : DbContext
+    public class CRMContext : IdentityDbContext<ApplicationUser>
     {
         public CRMContext(DbContextOptions<CRMContext> options) : base(options) { }
 
@@ -33,6 +34,9 @@ namespace CarShowRoom.Db
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<Depot>().Property(x => x.Name).IsRequired();
             modelBuilder.Entity<Partner>().Property(x => x.Name).IsRequired();
 

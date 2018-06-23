@@ -31,6 +31,7 @@
                                 <tr>
                                     <th></th>
                                     <th>Услуга</th>
+                                    <th>Цена</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -41,7 +42,8 @@
                                         <input type="checkbox" asp-for="@services[i].Checked" />
                                         <input type="hidden" asp-for="@services[i].Id" />
                                     </td>
-                                    <td><label asp-for="@services[i].Id">@services[i].Name</label></td>
+                                    <td>@services[i].Name</td>
+                                    <td>@services[i].Price</td>
                                 </tr>
                                 }
                             </tbody>
