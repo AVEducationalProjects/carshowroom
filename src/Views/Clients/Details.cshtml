@@ -114,17 +114,44 @@
                 </table>
             </div>
         </div>
- 
+
         <div class="panel panel-default">
             <div class="panel-heading">
                 <div class="row">
                     <div class="col-md-9"><h4> Услуги и запчасти </h4></div>
                     <div class="col-md-3 text-right">
-                        <a class="btn btn-primary" asp-action="CreateOrder"><span class="glyphicon glyphicon-plus"></span> &nbsp; Заказать</a>
+                        <a class="btn btn-primary" asp-action="CreateOrder" asp-route-id="@Model.Id"><span class="glyphicon glyphicon-plus"></span> &nbsp; Заказать</a>
                     </div>
                 </div>
             </div>
             <div class="panel-body">
+                <table class="table table-hover table-striped datagrid">
+                    <thead>
+                        <tr>
+                            <th class="col-md-3">
+                                №
+                            </th>
+                            <th>
+                                Краткое описание
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in ViewBag.Orders)
+                        {
+                            <tr>
+                                <td>
+                                    <a asp-action="Details" asp-route-id="@item.Id">
+                                        @item.ToString()
+                                    </a>
+                                </td>
+                                <td>
+                                    @item.GetShortDescription()
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>

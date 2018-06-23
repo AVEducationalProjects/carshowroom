@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CarShowRoom.Db;
 using CarShowRoom.Models;
+using CarShowRoom.ViewModels;
 
 namespace CarShowRoom.Controllers
 {
@@ -76,6 +77,17 @@ namespace CarShowRoom.Controllers
             {
                 return NotFound();
             }
+
+            ViewBag.Orders = await _context.Orders
+                .Where(x => x.ClientId == id.Value && !x.IsSell)
+                .Include(o => o.Car).ThenInclude(o => o.CarModel).ThenInclude(o => o.Vendor)
+                .Include(o => o.Car).ThenInclude(o => o.Color)
+                .Include(o => o.Client)
+                .Include(o => o.Services).ThenInclude(o => o.Service)
+                .Include(o => o.Parts).ThenInclude(o => o.PartType)
+                .Include(o => o.Bills)
+                .OrderByDescending(x => x.Done).ThenBy(x => x.Date)
+                .ToListAsync();
 
             return View(client);
         }
@@ -278,6 +290,42 @@ namespace CarShowRoom.Controllers
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Details), new { Id = id });
+        }
+
+        public async Task<IActionResult> CreateOrder(int id)
+        {
+            var order = new Order()
+            {
+                ClientId = id,
+                IsSell = false,
+            };
+
+            var client = await _context.Clients
+                .Include(x => x.Cars).ThenInclude(x => x.CarModel).ThenInclude(x=>x.Vendor)
+                .Include(x => x.Cars).ThenInclude(x => x.Color)
+                .SingleAsync();
+            ViewBag.Cars = new SelectList(client.Cars, "Id", null);
+            ViewBag.Services = (await _context.Services.ToListAsync())
+                .Select(x => new ServiceCheck { Id = x.Id, Name = x.Name, Checked = false }).ToList();
+            
+            return View(order);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateOrder([Bind("Date","CarId","ClientId")]Order order, List<ServiceCheck> services)
+        {
+            foreach(var svc in services.Where(x => x.Checked))
+            {
+                var service = await _context.Services.SingleAsync(x => x.Id == svc.Id);
+                order.Services.Add(new ServiceOrderItem { Service = service, Order = order });
+            }
+
+            order.UpdatePrice();
+            _context.Orders.Add(order);
+            
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Details), new { Id = order.ClientId });
         }
     }
 }

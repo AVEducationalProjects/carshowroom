@@ -1,0 +1,64 @@
+﻿@model CarShowRoom.Models.Order
+
+@{
+    ViewData["Title"] = "Оформить наряд";
+
+    var services = (IList<CarShowRoom.ViewModels.ServiceCheck>)ViewBag.Services;
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-md-8"><h4> @ViewData["Title"] </h4></div>
+                </div>
+            </div>
+            <div class="panel-body">
+                <div class="col-md-12">
+                    <form asp-action="CreateOrder">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <input type="hidden" asp-for="Date" class="form-control" />
+                        <input type="hidden" asp-for="ClientId" class="form-control" />
+                        <div class="form-group">
+                            <label asp-for="CarId" class="control-label">Производитель</label>
+                            <select asp-for="CarId" asp-items="ViewBag.Cars" class="form-control"> </select>
+                            <span asp-validation-for="CarId" class="text-danger"></span>
+                        </div>
+
+                        <table class="table table-hover table-striped datagrid">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Услуга</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for(var i =0; i<services.Count; i++)
+                                {
+                                <tr>
+                                    <td class="col-md-1">
+                                        <input type="checkbox" asp-for="@services[i].Checked" />
+                                        <input type="hidden" asp-for="@services[i].Id" />
+                                    </td>
+                                    <td><label asp-for="@services[i].Id">@services[i].Name</label></td>
+                                </tr>
+                                }
+                            </tbody>
+                        </table>
+                        <div class="form-group">
+                            <input type="submit" value="Создать" class="btn btn-primary" />
+                        </div>
+                    </form>
+                </div>
+
+                <div class="col-md-12">
+                    <a asp-action="Index">Назад</a>
+                </div>
+            </div>
+
+            
+        </div>
+    </div>
+</div>
+

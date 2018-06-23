@@ -10,6 +10,8 @@ namespace CarShowRoom.Models
         public Order()
         {
             Date = DateTime.Now;
+            Services = new List<ServiceOrderItem>();
+            Parts = new List<PartOrderItem>();
         }
         public int Id { get; set; }
 
