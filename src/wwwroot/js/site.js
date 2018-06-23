@@ -22,6 +22,7 @@ $(document).ready(function () {
         }
     }
 
-    $('.datagrid').DataTable({ language: language, pageLength: 25 });
+    $('.datagrid').DataTable({ language: language, pageLength: 25, ordering: false });
+    $('.datagrid-ordering').DataTable({ language: language, pageLength: 25, ordering: true });
 });
 

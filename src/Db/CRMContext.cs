@@ -29,6 +29,8 @@ namespace CarShowRoom.Db
 
         public DbSet<Bill> Bills { get; set; }
 
+        public DbSet<TestDrive> TestDrives { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Depot>().Property(x => x.Name).IsRequired();
@@ -69,6 +71,9 @@ namespace CarShowRoom.Db
             modelBuilder.Entity<ServiceOrderItem>().HasOne(x => x.Service).WithMany().OnDelete(DeleteBehavior.Cascade).IsRequired();
 
             modelBuilder.Entity<Bill>().HasOne(x => x.Order).WithMany(x => x.Bills).HasForeignKey(x=>x.OrderId).OnDelete(DeleteBehavior.Cascade).IsRequired();
+
+            modelBuilder.Entity<TestDrive>().HasOne(x => x.Car).WithMany().OnDelete(DeleteBehavior.Cascade).HasForeignKey(x => x.CarId).IsRequired();
+            modelBuilder.Entity<TestDrive>().HasOne(x => x.Client).WithMany().OnDelete(DeleteBehavior.Cascade).HasForeignKey(x => x.ClientId).IsRequired();
         }
 
     }

@@ -239,6 +239,8 @@ namespace CarShowRoom.Controllers
                 await _context.SaveChangesAsync();
 
                 await CreateSellOrder(car);
+                await _context.SaveChangesAsync();
+
 
                 return RedirectToAction(nameof(Details), new { Id = car.ClientId });
             }

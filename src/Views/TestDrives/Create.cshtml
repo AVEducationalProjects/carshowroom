@@ -1,0 +1,86 @@
+﻿@model CarShowRoom.Models.TestDrive
+
+@{
+    ViewData["Title"] = "Запись на тест-драйв";
+}
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="row">
+            <div class="col-md-8"> <h4> @ViewData["Title"] </h4></div>
+        </div>
+    </div>
+    <div class="panel-body">
+
+        <form asp-action="Create">
+            <div class="row">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group col-md-4">
+                    <label asp-for="DateTime" class="control-label"></label>
+                    <input asp-for="DateTime" class="form-control" />
+                    <span asp-validation-for="DateTime" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <table class="table table-hover table-striped datagrid">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>
+                                    Название автомобиля
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var car in (IList<CarShowRoom.Models.Car>)ViewData["Cars"])
+                            {
+                                <tr>
+                                    <td class="text-right">
+                                        <input type="radio" asp-for="CarId" value="@car.Id">
+                                    </td>
+                                    <td>
+                                        @car.ToString()
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="form-group col-md-6">
+                    <table class="table table-hover table-striped disbale-ordering datagrid">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>
+                                    Клиент
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var client in (IList<CarShowRoom.Models.Client>)ViewData["Clients"])
+                            {
+                                <tr>
+                                    <td class="text-right">
+                                        <input type="radio" asp-for="ClientId" value="@client.Id">
+                                    </td>
+                                    <td>
+                                        @client.ToString()
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="form-group col-md-12">
+                    <input type="submit" value="Добавить" class="btn btn-default btn-primary" />
+                </div>
+            </div>
+        </form>
+
+        <a asp-action="Index">Назад</a>
+    </div>
+
+
+
+</div>

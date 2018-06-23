@@ -1,0 +1,62 @@
+﻿@model IEnumerable<CarShowRoom.Models.TestDrive>
+
+@{
+    ViewData["Title"] = "Тест драйв";
+}
+
+<div class="panel panel-default">
+
+    <div class="panel-heading">
+        <div class="row">
+            <div class="col-md-8"> <h4> @ViewData["Title"] </h4></div>
+            <div class="col-md-4 text-right">
+                <a class="btn btn-primary" asp-action="Create"><span class="glyphicon glyphicon-plus"></span> &nbsp; Добавить</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel-body">
+        <table class="table table-hover table-striped datagrid">
+            <thead>
+                <tr>
+                    <th class="col-md-2">
+                        Дата время
+                    </th>
+                    <th>
+                        Машина
+                    </th>
+                    <th class="col-md-3">
+                        Клиент
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.DateTime)
+                        </td>
+                        <td>
+                            @item.Car.ToString()
+                        </td>
+                        <td>
+                            @item.Client.ToString()
+                        </td>
+                        <td>
+                            @if (!item.Complete)
+                            {
+                                <form asp-action="Complete">
+                                    <input type="hidden" name="Id" value="@item.Id" />
+                                    <input type="submit" value="Завершить" class="btn btn-outline btn-default btn-xs" />
+                                </form>
+                                <a class="btn btn-outline btn-default btn-xs " asp-action="Delete" asp-route-id="@item.Id">Удалить</a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
