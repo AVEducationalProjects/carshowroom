@@ -9,6 +9,7 @@ using CarShowRoom.Db;
 using CarShowRoom.Models;
 using CarShowRoom.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace CarShowRoom.Controllers
 {
@@ -16,10 +17,12 @@ namespace CarShowRoom.Controllers
     public class ClientsController : Controller
     {
         private readonly CRMContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public ClientsController(CRMContext context)
+        public ClientsController(CRMContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Clients
@@ -67,6 +70,7 @@ namespace CarShowRoom.Controllers
             }
 
             var client = await _context.Clients
+                .Include(x => x.Account)
                 .Include(x => x.Cars)
                     .ThenInclude(x => x.CarModel)
                         .ThenInclude(x => x.Vendor)
@@ -95,9 +99,13 @@ namespace CarShowRoom.Controllers
         }
 
         // GET: Clients/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+            ViewBag.Accounts = new SelectList(_userManager.Users,"Id", null);
+            return View(new Client
+            {
+                AccountId = (await _userManager.GetUserAsync(User)).Id
+            });
         }
 
         // POST: Clients/Create
@@ -105,7 +113,7 @@ namespace CarShowRoom.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,FirstName,MiddleName,LastName,Address,Phone,Email,Stage")] Client client)
+        public async Task<IActionResult> Create([Bind("Id,FirstName,MiddleName,LastName,Address,Phone,Email,Stage,AccountId")] Client client)
         {
             if (ModelState.IsValid)
             {
@@ -124,6 +132,8 @@ namespace CarShowRoom.Controllers
                 return NotFound();
             }
 
+            ViewBag.Accounts = new SelectList(_userManager.Users, "Id", null);
+
             var client = await _context.Clients.SingleOrDefaultAsync(m => m.Id == id);
             if (client == null)
             {
@@ -137,7 +147,7 @@ namespace CarShowRoom.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,MiddleName,LastName,Address,Phone,Email,Stage")] Client client)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,MiddleName,LastName,Address,Phone,Email,Stage,AccountId")] Client client)
         {
             if (id != client.Id)
             {
@@ -148,7 +158,17 @@ namespace CarShowRoom.Controllers
             {
                 try
                 {
-                    _context.Update(client);
+                    var existedClient = await _context.Clients.SingleAsync(x => x.Id == id);
+                    existedClient.MiddleName = client.MiddleName;
+                    existedClient.FirstName = client.FirstName;
+                    existedClient.LastName = client.LastName;
+                    existedClient.Phone = client.Phone;
+                    existedClient.Address = client.Address;
+                    existedClient.Email = client.Email;
+                    existedClient.AccountId = client.AccountId;
+                    existedClient.UpdateStage(client.Stage);
+
+
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -164,6 +184,9 @@ namespace CarShowRoom.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+
+            ViewBag.Accounts = new SelectList(_userManager.Users, "Id", null);
+
             return View(client);
         }
 
@@ -202,7 +225,9 @@ namespace CarShowRoom.Controllers
             var client = await _context.Clients.SingleOrDefaultAsync(m => m.Id == id);
 
             if (client.Stage != Stage.Denied && client.Stage != Stage.Contracted)
-                client.Stage = client.Stage + 1;
+            {
+                client.UpdateStage(client.Stage + 1);
+            }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
@@ -229,7 +254,7 @@ namespace CarShowRoom.Controllers
             ViewData["ColorId"] = new SelectList(_context.CarColors, "Id", "Name");
             ViewData["PartnerId"] = new SelectList(_context.Partners, "Id", "Name");
 
-            return View(new Car { ClientId = id, Year=DateTime.Now.Year });
+            return View(new Car { ClientId = id, Year = DateTime.Now.Year });
         }
 
         public async Task<IActionResult> SelectCar(int id, int carId)
@@ -282,7 +307,7 @@ namespace CarShowRoom.Controllers
             _context.Orders.Add(order);
 
             var client = await _context.Clients.SingleAsync(x => x.Id == car.ClientId.Value);
-            client.Stage = Stage.Purchase;
+            client.UpdateStage(Stage.Purchase);
         }
 
         public async Task<IActionResult> DismissOrder(int id, int carId)
@@ -303,20 +328,20 @@ namespace CarShowRoom.Controllers
             };
 
             var client = await _context.Clients
-                .Include(x => x.Cars).ThenInclude(x => x.CarModel).ThenInclude(x=>x.Vendor)
+                .Include(x => x.Cars).ThenInclude(x => x.CarModel).ThenInclude(x => x.Vendor)
                 .Include(x => x.Cars).ThenInclude(x => x.Color)
-                .SingleAsync(x=>x.Id==id);
+                .SingleAsync(x => x.Id == id);
             ViewBag.Cars = new SelectList(client.Cars, "Id", null);
             ViewBag.Services = (await _context.Services.ToListAsync())
-                .Select(x => new ServiceCheck { Id = x.Id, Name = x.Name, Price=x.Price, Checked = false }).ToList();
-            
+                .Select(x => new ServiceCheck { Id = x.Id, Name = x.Name, Price = x.Price, Checked = false }).ToList();
+
             return View(order);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateOrder([Bind("Date","CarId","ClientId")]Order order, List<ServiceCheck> services)
+        public async Task<IActionResult> CreateOrder([Bind("Date", "CarId", "ClientId")]Order order, List<ServiceCheck> services)
         {
-            foreach(var svc in services.Where(x => x.Checked))
+            foreach (var svc in services.Where(x => x.Checked))
             {
                 var service = await _context.Services.SingleAsync(x => x.Id == svc.Id);
                 order.Services.Add(new ServiceOrderItem { Service = service, Order = order });
@@ -324,7 +349,7 @@ namespace CarShowRoom.Controllers
 
             order.UpdatePrice();
             _context.Orders.Add(order);
-            
+
             await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Details), new { Id = order.ClientId });

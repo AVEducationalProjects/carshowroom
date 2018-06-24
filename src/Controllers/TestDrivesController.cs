@@ -88,7 +88,7 @@ namespace CarShowRoom.Controllers
             }
 
             testDrive.Complete = true;
-            testDrive.Client.Stage = Stage.Decision;
+            testDrive.Client.UpdateStage(Stage.Decision);
 
             await _context.SaveChangesAsync();
 

@@ -6,6 +6,11 @@ namespace CarShowRoom.Models
 {
     public class Client
     {
+        public Client()
+        {
+            LastChange = DateTime.Now;
+        }
+
         public int Id { get; set; }
 
         [Required]
@@ -26,11 +31,26 @@ namespace CarShowRoom.Models
         [Required]
         public Stage Stage { get; set; }
 
+        public ApplicationUser Account { get; set; }
+
+        public string AccountId { get; set; }
+
+        public DateTime LastChange { get; set; }
+
         public ICollection<Car> Cars { get; set; }
 
         public override string ToString()
         {
             return $"{LastName} {FirstName} {MiddleName}";
+        }
+
+        public void UpdateStage(Stage stage)
+        {
+            if(stage != Stage)
+            {
+                Stage = stage;
+                LastChange = DateTime.Now;
+            }
         }
     }
 }

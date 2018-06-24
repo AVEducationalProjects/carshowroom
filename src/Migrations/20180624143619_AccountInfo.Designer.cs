@@ -12,9 +12,10 @@ using System;
 namespace CarShowRoom.Migrations
 {
     [DbContext(typeof(CRMContext))]
-    partial class CRMContextModelSnapshot : ModelSnapshot
+    [Migration("20180624143619_AccountInfo")]
+    partial class AccountInfo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -186,8 +187,7 @@ namespace CarShowRoom.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("AccountId")
-                        .IsRequired();
+                    b.Property<string>("AccountId");
 
                     b.Property<string>("Address");
 
@@ -533,8 +533,7 @@ namespace CarShowRoom.Migrations
                 {
                     b.HasOne("CarShowRoom.Models.ApplicationUser", "Account")
                         .WithMany()
-                        .HasForeignKey("AccountId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("AccountId");
                 });
 
             modelBuilder.Entity("CarShowRoom.Models.Order", b =>

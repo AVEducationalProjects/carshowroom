@@ -33,15 +33,15 @@ namespace CarShowRoom
             await CreateRole(rm, administratorRole);
             await CreateRole(rm, cassierRole);
 
-            var admin = await CreateUser(um, adminEmail);
+            var admin = await CreateUser(um, adminEmail, "Иван", "Иванов");
             await SetDefaultPasswordForUser(um, adminEmail, admin);
             await AddRoleToUser(um, adminEmail, administratorRole, admin);
 
-            var account = await CreateUser(um, accountEmail);
+            var account = await CreateUser(um, accountEmail, "Петр", "Петров");
             await SetDefaultPasswordForUser(um, accountEmail, account);
             await AddRoleToUser(um, accountEmail, administratorRole, account);
 
-            var cassier = await CreateUser(um, cassierEmail);
+            var cassier = await CreateUser(um, cassierEmail, "Исаак", "Рабинович");
             await SetDefaultPasswordForUser(um, cassierEmail, cassier);
             await AddRoleToUser(um, cassierEmail, cassierRole, cassier);
 
@@ -57,9 +57,9 @@ namespace CarShowRoom
             }
         }
 
-        private static async Task<ApplicationUser> CreateUser(UserManager<ApplicationUser> um, string email)
+        private static async Task<ApplicationUser> CreateUser(UserManager<ApplicationUser> um, string email, string firstName, string lastName)
         {
-            var user = new ApplicationUser { Email = email, UserName=email };
+            var user = new ApplicationUser { Email = email, UserName=email, FirstName = firstName, LastName = lastName };
 
             var ir = await um.CreateAsync(user);
             if (!ir.Succeeded)

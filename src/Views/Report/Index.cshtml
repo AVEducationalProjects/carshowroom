@@ -1,0 +1,113 @@
+﻿@model ReportViewModel
+
+@{
+    ViewData["Title"] = "Отчет";
+}
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="row">
+            <div class="col-md-2"> <h4> @ViewData["Title"] </h4></div>
+            <form asp-action="Index">
+                <div class="col-md-1 text-right">
+                    <label class="control-label" asp-for="From">От</label>
+                </div>
+                <div class="col-md-3">
+                    <input class="form-control" type="date" asp-for="From" />
+                </div>
+                <div class="col-md-1 text-right">
+                    <label class="control-label" asp-for="To">До</label>
+                </div>
+                <div class="col-md-3">
+                    <input class="form-control" type="date" asp-for="To" />
+                </div>
+                <div class="col-md-2">
+                    <input type="submit" class="form-control btn btn-primary" value="Фильтровать" />
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            @if (Model.HasPeriod())
+            {
+
+                <div class="col-md-12">
+                    <h4>Общая сводка</h4>
+                    <dl class="dl-horizontal">
+                        <dt>
+                            Новых
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.TotalLead)
+                        </dd>
+                        <dt>
+                            Проявивших интерес
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.TotalInterest)
+                        </dd>
+                        <dt>
+                            Принимающих решение
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.TotalDecision)
+                        </dd>
+                        <dt>
+                            Оформляющих сделку
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.TotalPurchase)
+                        </dd>
+                        <dt>
+                            Купивших
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.TotalContracted)
+                        </dd>
+                        <dt>
+                            Отказавшихся
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.TotalDenied)
+                        </dd>
+                    </dl>
+                </div>
+
+                <div class="col-md-12">
+                    <h4>По менеджерам</h4>
+                    <table class="table table-hover table-striped datagrid">
+                        <thead>
+                            <tr>
+                                <th>Менеджер</th>
+                                <th>Новых</th>
+                                <th>Проявивших интерес</th>
+                                <th>Принимающих решение</th>
+                                <th>Оформляющих сделку</th>
+                                <th>Купивших</th>
+                                <th>Отказавшихся</th>
+                                <th>Итого</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach(var data in Model.AccountStats)
+                            {
+                            <tr>
+                                <td>@data.AccountName</td>
+                                <td>@data.Lead</td>
+                                <td>@data.Interest</td>
+                                <td>@data.Decision</td>
+                                <td>@data.Purchase</td>
+                                <td>@data.Contracted</td>
+                                <td>@data.Denied</td>
+                                <td>@data.Total()</td>
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+            }
+        </div>
+    </div>
+</div>

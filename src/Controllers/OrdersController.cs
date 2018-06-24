@@ -78,7 +78,7 @@ namespace CarShowRoom.Controllers
             order.Done = true;
             if (order.IsSell)
             {
-                order.Client.Stage = Stage.Contracted;
+                order.Client.UpdateStage(Stage.Contracted);
                 order.Car.Sold = true;
                 order.Car.TestDrive = false;
                 order.Car.DepotId = null;
