@@ -28,7 +28,7 @@ namespace CarShowRoom
 
             const string adminEmail = "admin@auto.com";
             const string accountEmail = "account@auto.com";
-            const string cassierEmail = "cassiert@auto.com";
+            const string cassierEmail = "cassier@auto.com";
 
             await CreateRole(rm, administratorRole);
             await CreateRole(rm, cassierRole);
