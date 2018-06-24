@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CarShowRoom.Db;
 using CarShowRoom.Models;
+using CarShowRoom.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -33,6 +34,14 @@ namespace CarShowRoom.Controllers
                 .Where(x => !x.Sold).AsNoTracking();
 
             ViewBag.Cars = await carsQuery.ToListAsync();
+
+            ViewBag.Parts = await _context.Parts.Include(x => x.PartType)
+                .GroupBy(x => x.PartType).Select(g => new PartsViewModel
+                {
+                    Name = g.Key.Name,
+                    Price = g.Key.Price,
+                    Amount = g.Count()
+                }).ToListAsync();
 
             return View();
         }
@@ -221,6 +230,34 @@ namespace CarShowRoom.Controllers
                 }
             }
         }
+
+
+        // GET: Cars/Create
+        public IActionResult CreateParts()
+        {
+            ViewBag.PartTypes = new SelectList(_context.PartTypes.AsNoTracking(), "Id", "Name");
+            return View();
+        }
+
+        // POST: Cars/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateParts(PartCheck part)
+        {
+            for (int i = 0; i < part.Amount; i++)
+            {
+                _context.Parts.Add(new Part
+                {
+                    PartTypeId = part.Id,
+                    Code = Guid.NewGuid().ToString()
+                });
+            }
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
 
         private bool CarExists(int id)
         {

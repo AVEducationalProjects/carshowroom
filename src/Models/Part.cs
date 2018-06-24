@@ -12,6 +12,8 @@ namespace CarShowRoom.Models
 
         public PartType PartType { get; set; }
 
+        public int PartTypeId { get; set; }
+
         public Depot Depot { get; set; }
     }
 

@@ -101,7 +101,7 @@ namespace CarShowRoom.Controllers
         // GET: Clients/Create
         public async Task<IActionResult> Create()
         {
-            ViewBag.Accounts = new SelectList(_userManager.Users,"Id", null);
+            ViewBag.Accounts = new SelectList(_userManager.Users, "Id", null);
             return View(new Client
             {
                 AccountId = (await _userManager.GetUserAsync(User)).Id
@@ -335,16 +335,25 @@ namespace CarShowRoom.Controllers
             ViewBag.Services = (await _context.Services.ToListAsync())
                 .Select(x => new ServiceCheck { Id = x.Id, Name = x.Name, Price = x.Price, Checked = false }).ToList();
 
+            ViewBag.Parts = (await _context.PartTypes.ToListAsync())
+                .Select(x => new PartCheck { Id = x.Id, Name = x.Name, Price = x.Price, Amount = 0 }).ToList();
+
             return View(order);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateOrder([Bind("Date", "CarId", "ClientId")]Order order, List<ServiceCheck> services)
+        public async Task<IActionResult> CreateOrder([Bind("Date", "CarId", "ClientId")]Order order, List<ServiceCheck> services, List<PartCheck> parts)
         {
             foreach (var svc in services.Where(x => x.Checked))
             {
                 var service = await _context.Services.SingleAsync(x => x.Id == svc.Id);
                 order.Services.Add(new ServiceOrderItem { Service = service, Order = order });
+            }
+
+            foreach (var p in parts.Where(x => x.Amount > 0))
+            {
+                var part = await _context.PartTypes.SingleAsync(x => x.Id == p.Id);
+                order.Parts.Add(new PartOrderItem { PartType = part, Order = order, Count = p.Amount });
             }
 
             order.UpdatePrice();

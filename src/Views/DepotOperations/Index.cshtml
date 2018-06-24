@@ -4,6 +4,7 @@
     ViewData["Title"] = "Склады";
 
     var cars = (IList<Car>)ViewBag.Cars;
+    var parts = (IList<PartsViewModel>)ViewBag.Parts;
 }
 
 <div class="row">
@@ -61,4 +62,46 @@
         </div>
     </div>
 
+    <div class="col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-md-8"> <h4> Запасные части </h4></div>
+                    <div class="col-md-4 text-right">
+                        <a class="btn btn-primary" asp-action="CreateParts"><span class="glyphicon glyphicon-plus"></span> &nbsp; Заказать</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel-body">
+                <table class="table table-hover table-striped datagrid">
+                    <thead>
+                        <tr>
+                            <th>
+                                Название
+                            </th>
+                            <th>
+                                Цена
+                            </th>
+                            <th>
+                                Количество
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var part in parts)
+                        {
+                            <tr>
+                                <td>
+                                    @part.Name
+                                </td>
+                                <td>@part.Price</td>
+                                <td>@part.Amount</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>

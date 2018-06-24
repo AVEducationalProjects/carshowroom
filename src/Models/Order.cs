@@ -41,7 +41,7 @@ namespace CarShowRoom.Models
         {
             if ((Car != null || CarId !=0) && Parts != null && Services != null)
             {
-                Price = IsSell ? Car.Price : 0 + Services.Sum(x => x.Service.Price) + Parts.Sum(x => x.PartType.Price);
+                Price = IsSell ? Car.Price : 0 + Services.Sum(x => x.Service.Price) + Parts.Sum(x => x.PartType.Price*x.Count);
             }
         }
 

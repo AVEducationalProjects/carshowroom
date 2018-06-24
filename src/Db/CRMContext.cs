@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using CarShowRoom.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using CarShowRoom.ViewModels;
 
 namespace CarShowRoom.Db
 {
@@ -31,6 +32,8 @@ namespace CarShowRoom.Db
         public DbSet<Bill> Bills { get; set; }
 
         public DbSet<TestDrive> TestDrives { get; set; }
+
+        public DbSet<Part> Parts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -78,7 +81,11 @@ namespace CarShowRoom.Db
 
             modelBuilder.Entity<TestDrive>().HasOne(x => x.Car).WithMany().OnDelete(DeleteBehavior.Cascade).HasForeignKey(x => x.CarId).IsRequired();
             modelBuilder.Entity<TestDrive>().HasOne(x => x.Client).WithMany().OnDelete(DeleteBehavior.Cascade).HasForeignKey(x => x.ClientId).IsRequired();
+
+            modelBuilder.Entity<Part>().HasOne(x => x.PartType).WithMany().HasForeignKey(x => x.PartTypeId).IsRequired();
         }
+
+        public DbSet<CarShowRoom.ViewModels.PartCheck> PartCheck { get; set; }
 
     }
 }
