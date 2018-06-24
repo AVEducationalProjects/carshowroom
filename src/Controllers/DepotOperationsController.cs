@@ -201,16 +201,11 @@ namespace CarShowRoom.Controllers
             {
                 var existedCar = await _context.Cars.SingleOrDefaultAsync(x => x.Id == id);
 
-                if (ModelState.IsValid)
-                {
-                    existedCar.DepotId = car.DepotId;
-                    _context.Update(existedCar);
-                    await _context.SaveChangesAsync();
+                existedCar.DepotId = car.DepotId;
+                _context.Update(existedCar);
+                await _context.SaveChangesAsync();
 
-                    return RedirectToAction(nameof(Index));
-                }
-                ViewData["DepotId"] = new SelectList(_context.Depots, "Id", "Name", car.DepotId);
-                return View(existedCar);
+                return RedirectToAction(nameof(Index));
             }
             catch (DbUpdateConcurrencyException)
             {

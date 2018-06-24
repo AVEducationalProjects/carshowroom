@@ -38,19 +38,22 @@
                     <tbody>
                         @foreach (var car in cars)
                         {
-                        <tr>
-                            <td>
-                                <a asp-action="EditCar" asp-route-id="@car.Id">
-                                    @car.ToString()
-                                </a>
-                            </td>
-                            <td>@car.Price</td>
-                            <td>@((car.Depot!=null)?car.Depot.Name:"заказана")</td>
-                            <td class="text-right">
-                                <a class="btn btn-outline btn-default btn-xs " asp-action="AssignCarDepot" asp-route-id="@car.Id"><span class="glyphicon glyphicon-arrow-down"></span> &nbsp; Принять</a>
-                                <a class="btn btn-outline btn-default btn-xs " asp-action="DeleteCar" asp-route-id="@car.Id"><span class="glyphicon glyphicon-remove"></span> &nbsp; Удалить</a>
-                            </td>
-                        </tr>
+                            <tr>
+                                <td>
+                                    <a asp-action="EditCar" asp-route-id="@car.Id">
+                                        @car.ToString()
+                                    </a>
+                                </td>
+                                <td>@car.Price</td>
+                                <td>@((car.Depot != null) ? car.Depot.Name : "заказана")</td>
+                                <td class="text-right">
+                                    @if (!car.DepotId.HasValue)
+                                    {
+                                        <a class="btn btn-outline btn-default btn-xs " asp-action="AssignCarDepot" asp-route-id="@car.Id"><span class="glyphicon glyphicon-arrow-down"></span> &nbsp; Принять</a>
+                                        <a class="btn btn-outline btn-default btn-xs " asp-action="DeleteCar" asp-route-id="@car.Id"><span class="glyphicon glyphicon-remove"></span> &nbsp; Удалить</a>
+                                    }
+                                </td>
+                            </tr>
                         }
                     </tbody>
                 </table>

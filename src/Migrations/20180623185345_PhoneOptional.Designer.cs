@@ -12,9 +12,10 @@ using System;
 namespace CarShowRoom.Migrations
 {
     [DbContext(typeof(CRMContext))]
-    partial class CRMContextModelSnapshot : ModelSnapshot
+    [Migration("20180623185345_PhoneOptional")]
+    partial class PhoneOptional
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -101,8 +102,6 @@ namespace CarShowRoom.Migrations
                     b.Property<int>("ColorId");
 
                     b.Property<int?>("DepotId");
-
-                    b.Property<int>("Mileage");
 
                     b.Property<int>("PartnerId");
 

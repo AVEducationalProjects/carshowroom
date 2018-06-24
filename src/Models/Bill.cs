@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace CarShowRoom.Models
 {
@@ -8,10 +9,12 @@ namespace CarShowRoom.Models
 
         public DateTime Date { get; set; }
 
+        [Required]
         public decimal Amount { get; set; }
 
         public Order Order { get; set; }
 
+        [Required]
         public int OrderId { get; set; }
     }
 }

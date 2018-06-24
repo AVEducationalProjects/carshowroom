@@ -227,7 +227,7 @@ namespace CarShowRoom.Controllers
             ViewData["ColorId"] = new SelectList(_context.CarColors, "Id", "Name");
             ViewData["PartnerId"] = new SelectList(_context.Partners, "Id", "Name");
 
-            return View(new Car { ClientId = id });
+            return View(new Car { ClientId = id, Year=DateTime.Now.Year });
         }
 
         public async Task<IActionResult> SelectCar(int id, int carId)

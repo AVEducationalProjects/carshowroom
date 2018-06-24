@@ -56,7 +56,6 @@ namespace CarShowRoom.Db
 
             modelBuilder.Entity<Client>().Property(x => x.FirstName).IsRequired();
             modelBuilder.Entity<Client>().Property(x => x.LastName).IsRequired();
-            modelBuilder.Entity<Client>().Property(x => x.Phone).IsRequired();
 
             modelBuilder.Entity<Car>().Property(x => x.VIN).IsRequired();
             modelBuilder.Entity<Car>().Property(x => x.Year).IsRequired();

@@ -20,5 +20,19 @@
     },
     // Optionally generate .map file
     "sourceMap": false
+  },
+
+  {
+    "outputFileName": "wwwroot/lib/sb-admin-theme/js/sb-admin-2.min.js",
+    "inputFiles": [
+      "wwwroot/lib/sb-admin-theme/js/sb-admin-2.js"
+    ],
+    // Optionally specify minification options
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    // Optionally generate .map file
+    "sourceMap": false
   }
 ]

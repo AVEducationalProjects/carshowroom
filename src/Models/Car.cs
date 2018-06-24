@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace CarShowRoom.Models
 {
@@ -11,14 +12,21 @@ namespace CarShowRoom.Models
 
         public int Id { get; set; }
 
+        [Required]
         public string VIN { get; set; }
 
+        [Required]
+        public int Mileage { get; set; }
+
+        [Required]
         public int Year { get; set; }
-        
+
+        [Required]
         public decimal Price { get; set; }
         
         public CarColor Color { get; set; }
 
+        [Required]
         public int ColorId { get; set; }
 
         public bool TestDrive { get; set; }
@@ -27,6 +35,7 @@ namespace CarShowRoom.Models
 
         public CarModel CarModel { get; set; }
 
+        [Required]
         public int CarModelId { get; set; }
 
         public Depot Depot { get; set; }
@@ -39,6 +48,7 @@ namespace CarShowRoom.Models
 
         public Partner Partner { get; set; }
 
+        [Required]
         public int PartnerId { get; set; }
 
         public IList<Order> Orders { get; set; }

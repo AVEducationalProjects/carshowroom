@@ -78,6 +78,7 @@ namespace CarShowRoom.Controllers
             {
                 order.Client.Stage = Stage.Contracted;
                 order.Car.Sold = true;
+                order.Car.TestDrive = false;
                 order.Car.DepotId = null;
             }
 

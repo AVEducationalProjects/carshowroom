@@ -7,18 +7,24 @@ namespace CarShowRoom.Models
     {
         public int Id { get; set; }
 
+        [Required]
         public string Name { get; set; }
 
+        [Required]
         public string EngineCapacity { get; set; }
 
+        [Required]
         public EngineType EngineType { get; set; }
 
+        [Required]
         public DriveUnitType DriveUnitType { get; set; }
 
+        [Required]
         public TransmissionType TransmissionType { get; set; }
 
         public Vendor Vendor { get; set; }
 
+        [Required]
         public int VendorId { get; set; }
 
         public override string ToString()
