@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CarShowRoom.Db;
 using CarShowRoom.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CarShowRoom.Controllers
 {
+    [Authorize(Roles = "admin")]
     public class CarColorsController : Controller
     {
         private readonly CRMContext _context;

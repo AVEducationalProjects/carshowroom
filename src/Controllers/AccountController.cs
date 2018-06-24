@@ -14,6 +14,7 @@ namespace CarShowRoom.Controllers
     public class AccountController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
+
         private readonly SignInManager<ApplicationUser> _signInManager;
 
         public AccountController(
@@ -49,11 +50,15 @@ namespace CarShowRoom.Controllers
                 var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
-                    return RedirectToLocal(returnUrl);
+                    var roles = await _userManager.GetRolesAsync(await _userManager.FindByEmailAsync(model.Email));
+                    if (roles.Contains("admin"))
+                        return RedirectToLocal(returnUrl);
+                    else if (roles.Contains("cassier"))
+                        return RedirectToLocal("/Bills");
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    ModelState.AddModelError(string.Empty, "Неудачная попытка входа.");
                     return View(model);
                 }
             }
@@ -67,7 +72,7 @@ namespace CarShowRoom.Controllers
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
-            return RedirectToAction(nameof(ClientsController.Index), "Client");
+            return RedirectToAction(nameof(AccountController.Login), "Account");
         }
 
         [HttpGet]

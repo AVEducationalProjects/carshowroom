@@ -4,12 +4,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using CarShowRoom.Db;
 using CarShowRoom.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace CarShowRoom.Controllers
 {
+    [Authorize(Roles = "admin")]
     public class DepotOperationsController : Controller
     {
         private readonly CRMContext _context;

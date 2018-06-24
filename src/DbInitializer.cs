@@ -24,15 +24,30 @@ namespace CarShowRoom
         private static async Task CreateDefaultUserAndRoleForApplication(UserManager<ApplicationUser> um, RoleManager<IdentityRole> rm)
         {
             const string administratorRole = "admin";
-            const string email = "admin@auto.com";
+            const string cassierRole = "cassier";
 
-            await CreateDefaultAdministratorRole(rm, administratorRole);
-            var user = await CreateDefaultUser(um, email);
-            await SetPasswordForDefaultUser(um, email, user);
-            await AddDefaultRoleToDefaultUser(um, email, administratorRole, user);
+            const string adminEmail = "admin@auto.com";
+            const string accountEmail = "account@auto.com";
+            const string cassierEmail = "cassiert@auto.com";
+
+            await CreateRole(rm, administratorRole);
+            await CreateRole(rm, cassierRole);
+
+            var admin = await CreateUser(um, adminEmail);
+            await SetDefaultPasswordForUser(um, adminEmail, admin);
+            await AddRoleToUser(um, adminEmail, administratorRole, admin);
+
+            var account = await CreateUser(um, accountEmail);
+            await SetDefaultPasswordForUser(um, accountEmail, account);
+            await AddRoleToUser(um, accountEmail, administratorRole, account);
+
+            var cassier = await CreateUser(um, cassierEmail);
+            await SetDefaultPasswordForUser(um, cassierEmail, cassier);
+            await AddRoleToUser(um, cassierEmail, cassierRole, cassier);
+
         }
 
-        private static async Task CreateDefaultAdministratorRole(RoleManager<IdentityRole> rm, string administratorRole)
+        private static async Task CreateRole(RoleManager<IdentityRole> rm, string administratorRole)
         {
             var ir = await rm.CreateAsync(new IdentityRole(administratorRole));
             if (!ir.Succeeded)
@@ -42,7 +57,7 @@ namespace CarShowRoom
             }
         }
 
-        private static async Task<ApplicationUser> CreateDefaultUser(UserManager<ApplicationUser> um, string email)
+        private static async Task<ApplicationUser> CreateUser(UserManager<ApplicationUser> um, string email)
         {
             var user = new ApplicationUser { Email = email, UserName=email };
 
@@ -57,7 +72,7 @@ namespace CarShowRoom
             return createdUser;
         }
 
-        private static async Task SetPasswordForDefaultUser(UserManager<ApplicationUser> um, string email, ApplicationUser user)
+        private static async Task SetDefaultPasswordForUser(UserManager<ApplicationUser> um, string email, ApplicationUser user)
         {
             const string password = "Pa$$w0rd";
             var ir = await um.AddPasswordAsync(user, password);
@@ -68,7 +83,7 @@ namespace CarShowRoom
             }
         }
 
-        private static async Task AddDefaultRoleToDefaultUser(UserManager<ApplicationUser> um, string email, string administratorRole, ApplicationUser user)
+        private static async Task AddRoleToUser(UserManager<ApplicationUser> um, string email, string administratorRole, ApplicationUser user)
         {
             var ir = await um.AddToRoleAsync(user, administratorRole);
             if (!ir.Succeeded)

@@ -8,9 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using CarShowRoom.Db;
 using CarShowRoom.Models;
 using CarShowRoom.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CarShowRoom.Controllers
 {
+    [Authorize(Roles = "admin")]
     public class ClientsController : Controller
     {
         private readonly CRMContext _context;
